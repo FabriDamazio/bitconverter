@@ -104,12 +104,21 @@ defmodule BitConverter do
 
   """
   @spec to_int16(binary(), keyword()) :: integer()
-  def to_int16(<<num::little-signed-integer-size(16)>> = binary, opts \\ []) do
-    case Keyword.get(opts, :endianess, :little) do
-      :big ->
-        <<n::big-signed-integer-size(16)>> = binary
-        n
-      _ -> num
+  def to_int16(binary, opts \\ []) when byte_size(binary) == 2 do
+    unsigned =
+      case Keyword.get(opts, :endianess, :little) do
+        :big ->
+          :binary.decode_unsigned(binary, :big)
+
+        _ ->
+          :binary.decode_unsigned(binary, :little)
+      end
+
+    if unsigned > 32767 do
+      # Convert to signed by subtracting 65536 (2^16)
+      unsigned - 65536
+    else
+      unsigned
     end
   end
 
