@@ -114,4 +114,53 @@ defmodule BitConverter do
       _ -> num
     end
   end
+
+  @doc """
+  Converts a binary representing a 32-bit unsigned integer into an integer.
+  A 32-bit unsigned integer ranges from 0 a 4.294.967.295.
+  Raises a FunctionClauseError when the binary has more than 32 bits.
+
+  ## Parameters
+
+    - `binary`: A binary pattern that matches a 32-bit unsigned integer.
+
+    - `opts` (Keyword list, optional): Additional options.
+      - `:endianness` (atom): `:little` for little-endian or `:big` for big-endian. Defaults to `:little`.
+
+  ## Examples
+
+      iex> BitConverter.to_uint32(<<0, 0, 0, 0>>)
+      0
+
+      iex> BitConverter.to_uint32(<<1, 0, 0 , 0>>)
+      1
+
+      iex> BitConverter.to_uint32(<<10, 0, 0, 0>>)
+      10
+
+      iex> BitConverter.to_uint32(<<255, 255, 255, 255>>)
+      4_294_967_295
+
+      iex> BitConverter.to_uint32(<<1, 0, 0, 0>>, endianess: :big)
+      16_777_216
+
+      iex> BitConverter.to_uint32(<<10, 0, 0, 0>>, endianess: :big)
+      167_772_160
+
+      iex> BitConverter.to_uint32(<<255, 255, 255, 255>>, endianess: :big)
+      4_294_967_295
+
+      iex> BitConverter.to_uint32(<<1, 0, 0, 0, 0>>)
+      ** (FunctionClauseError) no function clause matching in BitConverter.to_uint32/2
+
+  """
+  @spec to_uint32(binary(), keyword()) :: integer()
+  def to_uint32(<<num::little-unsigned-integer-size(32)>> = binary, opts \\ []) do
+    case Keyword.get(opts, :endianess, :little) do
+      :big ->
+        <<n::big-unsigned-integer-size(32)>> = binary
+        n
+      _ -> num
+    end
+  end
 end
