@@ -57,12 +57,10 @@ defmodule BitConverter do
 
   """
   @spec to_uint16(binary(), keyword()) :: integer()
-  def to_uint16(<<num::little-unsigned-integer-size(16)>> = binary, opts \\ []) do
+  def to_uint16(binary, opts \\ []) when byte_size(binary) == 2 do
     case Keyword.get(opts, :endianess, :little) do
-      :big ->
-        <<n::big-unsigned-integer-size(16)>> = binary
-        n
-      _ -> num
+      :big -> :binary.decode_unsigned(binary, :big)
+      _ -> :binary.decode_unsigned(binary, :little)
     end
   end
 
