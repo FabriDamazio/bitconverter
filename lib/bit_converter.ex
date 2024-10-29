@@ -163,4 +163,53 @@ defmodule BitConverter do
       _ -> num
     end
   end
+
+  @doc """
+  Converts a binary representing a 32-bit signed integer into an integer.
+  A 32-bit signed integer ranges from -2.147.483.648 a 2.147.483.647.
+  Raises a FunctionClauseError when the binary has more than 32 bits.
+
+  ## Parameters
+
+    - `binary`: A binary pattern that matches a 32-bit signed integer.
+
+    - `opts` (Keyword list, optional): Additional options.
+      - `:endianness` (atom): `:little` for little-endian or `:big` for big-endian. Defaults to `:little`.
+
+  ## Examples
+
+      iex> BitConverter.to_int32(<<0, 0, 0, 0>>)
+      0
+
+      iex> BitConverter.to_int32(<<10, 0, 0, 0>>)
+      10
+
+      iex> BitConverter.to_int32(<<0, 0, 0, 128>>)
+      -2_147_483_648
+
+      iex> BitConverter.to_int32(<<255, 255, 255, 127>>)
+      2_147_483_647
+
+      iex> BitConverter.to_int32(<<1, 0, 0, 0>>, endianess: :big)
+      16_777_216
+
+      iex> BitConverter.to_int32(<<10, 0, 0, 0>>, endianess: :big)
+      167_772_160
+
+      iex> BitConverter.to_int32(<<255, 255, 255, 127>>, endianess: :big)
+      -129
+
+      iex> BitConverter.to_int32(<<1, 0, 0, 0, 0>>)
+      ** (FunctionClauseError) no function clause matching in BitConverter.to_int32/2
+
+  """
+  @spec to_int32(binary(), keyword()) :: integer()
+  def to_int32(<<num::little-signed-integer-size(32)>> = binary, opts \\ []) do
+    case Keyword.get(opts, :endianess, :little) do
+      :big ->
+        <<n::big-signed-integer-size(32)>> = binary
+        n
+      _ -> num
+    end
+  end
 end
