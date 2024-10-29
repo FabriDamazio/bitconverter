@@ -25,7 +25,7 @@ defmodule BitConverter.MixProject do
         api_reference: false,
         source_ref: "v#{@version}",
         source_url: @source_url,
-        formatters: ["html"],
+        formatters: ["html"]
       ]
     ]
   end
