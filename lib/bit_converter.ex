@@ -221,7 +221,7 @@ defmodule BitConverter do
           :binary.decode_unsigned(binary, :little)
       end
 
-    if unsigned >  2_147_483_647 do
+    if unsigned > 2_147_483_647 do
       # Convert to signed by subtracting 4_294_967_296 (2^32)
       unsigned - 4_294_967_296
     else
@@ -383,7 +383,8 @@ defmodule BitConverter do
       ** (FunctionClauseError) no function clause matching in BitConverter.encode_int32/2
   """
   @spec encode_int32(integer(), keyword()) :: binary()
-  def encode_int32(number, opts \\ []) when number >= -2_147_483_648 and number <= 2_147_483_647 do
+  def encode_int32(number, opts \\ [])
+      when number >= -2_147_483_648 and number <= 2_147_483_647 do
     case Keyword.get(opts, :endianess, :little) do
       :big -> <<number::big-signed-32>>
       _ -> <<number::little-signed-32>>
