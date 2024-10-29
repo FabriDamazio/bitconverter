@@ -162,12 +162,10 @@ defmodule BitConverter do
 
   """
   @spec to_uint32(binary(), keyword()) :: integer()
-  def to_uint32(<<num::little-unsigned-integer-size(32)>> = binary, opts \\ []) do
+  def to_uint32(binary, opts \\ []) when byte_size(binary) == 4 do
     case Keyword.get(opts, :endianess, :little) do
-      :big ->
-        <<n::big-unsigned-integer-size(32)>> = binary
-        n
-      _ -> num
+      :big -> :binary.decode_unsigned(binary, :big)
+      _ -> :binary.decode_unsigned(binary, :little)
     end
   end
 
