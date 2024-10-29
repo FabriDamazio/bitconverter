@@ -226,4 +226,41 @@ defmodule BitConverter do
       unsigned
     end
   end
+
+  @doc """
+  Converts an integer into a binary representing a 16-bit unsigned integer.
+  A 16-bit unsigned integer ranges from 0 to 65,535.
+
+  ## Parameters
+
+    - `number`: An integer that fits in a 16-bit unsigned integer.
+
+    - `opts` (Keyword list, optional): Additional options.
+      - `:endianness` (atom): `:little` for little-endian or `:big` for big-endian. Defaults to `:little`.
+
+  ## Examples
+
+      iex> BitConverter.encode_uint16(1)
+      <<1, 0>>
+
+      iex> BitConverter.encode_uint16(65535)
+      <<255, 255>>
+
+      iex> BitConverter.encode_uint16(256, endianess: :big)
+      <<1, 0>>
+
+      iex> BitConverter.encode_uint16(65536)
+      ** (FunctionClauseError) no function clause matching in BitConverter.encode_uint16/2
+
+      iex> BitConverter.encode_uint16(-1)
+      ** (FunctionClauseError) no function clause matching in BitConverter.encode_uint16/2
+
+  """
+  @spec encode_uint16(integer(), keyword()) :: binary()
+  def encode_uint16(number, opts \\ []) when number >= 0 and number <= 65_535 do
+    case Keyword.get(opts, :endianess, :little) do
+      :big -> <<number::big-unsigned-16>>
+      _ -> <<number::little-unsigned-16>>
+    end
+  end
 end
