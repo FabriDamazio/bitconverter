@@ -20,7 +20,7 @@ defmodule BitConverter do
   @doc """
   Converts a binary representing a 16-bit unsigned integer into an integer.
   A 16-bit unsigned integer ranges from 0 to 65,535.
-  Raises a FunctionClauseError when the binary has more than 16 bits.
+  Raises a `FunctionClauseError` if the binary doesn't have exactly 2 bytes.
 
   ## Parameters
 
@@ -31,33 +31,33 @@ defmodule BitConverter do
 
   ## Examples
 
-      iex> BitConverter.to_uint16(<<0, 0>>)
+      iex> BitConverter.decode_uint16(<<0, 0>>)
       0
 
-      iex> BitConverter.to_uint16(<<1, 0>>)
+      iex> BitConverter.decode_uint16(<<1, 0>>)
       1
 
-      iex> BitConverter.to_uint16(<<10, 0>>)
+      iex> BitConverter.decode_uint16(<<10, 0>>)
       10
 
-      iex> BitConverter.to_uint16(<<255, 255>>)
+      iex> BitConverter.decode_uint16(<<255, 255>>)
       65535
 
-      iex> BitConverter.to_uint16(<<1, 0>>, endianess: :big)
+      iex> BitConverter.decode_uint16(<<1, 0>>, endianess: :big)
       256
 
-      iex> BitConverter.to_uint16(<<10, 0>>, endianess: :big)
+      iex> BitConverter.decode_uint16(<<10, 0>>, endianess: :big)
       2560
 
-      iex> BitConverter.to_uint16(<<255, 255>>, endianess: :big)
+      iex> BitConverter.decode_uint16(<<255, 255>>, endianess: :big)
       65535
 
-      iex> BitConverter.to_uint16(<<1, 0, 0>>)
-      ** (FunctionClauseError) no function clause matching in BitConverter.to_uint16/2
+      iex> BitConverter.decode_uint16(<<1, 0, 0>>)
+      ** (FunctionClauseError) no function clause matching in BitConverter.decode_uint16/2
 
   """
-  @spec to_uint16(binary(), keyword()) :: integer()
-  def to_uint16(binary, opts \\ []) when byte_size(binary) == 2 do
+  @spec decode_uint16(binary(), keyword()) :: integer()
+  def decode_uint16(binary, opts \\ []) when byte_size(binary) == 2 do
     case Keyword.get(opts, :endianess, :little) do
       :big -> :binary.decode_unsigned(binary, :big)
       _ -> :binary.decode_unsigned(binary, :little)
@@ -67,7 +67,7 @@ defmodule BitConverter do
   @doc """
   Converts a binary representing a 16-bit signed integer into an integer.
   A 16-bit signed integer ranges from -32,768 to 32,767.
-  Raises a FunctionClauseError when the binary has more than 16 bits.
+  Raises a `FunctionClauseError` if the binary doesn't have exactly 2 bytes.
 
   ## Parameters
 
@@ -78,33 +78,33 @@ defmodule BitConverter do
 
   ## Examples
 
-      iex> BitConverter.to_int16(<<0, 0>>)
+      iex> BitConverter.decode_int16(<<0, 0>>)
       0
 
-      iex> BitConverter.to_int16(<<10, 0>>)
+      iex> BitConverter.decode_int16(<<10, 0>>)
       10
 
-      iex> BitConverter.to_int16(<<0, 128>>)
+      iex> BitConverter.decode_int16(<<0, 128>>)
       -32_768
 
-      iex> BitConverter.to_int16(<<255, 127>>)
+      iex> BitConverter.decode_int16(<<255, 127>>)
       32_767
 
-      iex> BitConverter.to_int16(<<10, 0>>, endianess: :big)
+      iex> BitConverter.decode_int16(<<10, 0>>, endianess: :big)
       2560
 
-      iex> BitConverter.to_int16(<<0, 128>>, endianess: :big)
+      iex> BitConverter.decode_int16(<<0, 128>>, endianess: :big)
       128
 
-      iex> BitConverter.to_int16(<<255, 127>>, endianess: :big)
+      iex> BitConverter.decode_int16(<<255, 127>>, endianess: :big)
       -129
 
-      iex> BitConverter.to_int16(<<1, 0, 0>>)
-      ** (FunctionClauseError) no function clause matching in BitConverter.to_int16/2
+      iex> BitConverter.decode_int16(<<1, 0, 0>>)
+      ** (FunctionClauseError) no function clause matching in BitConverter.decode_int16/2
 
   """
-  @spec to_int16(binary(), keyword()) :: integer()
-  def to_int16(binary, opts \\ []) when byte_size(binary) == 2 do
+  @spec decode_int16(binary(), keyword()) :: integer()
+  def decode_int16(binary, opts \\ []) when byte_size(binary) == 2 do
     unsigned =
       case Keyword.get(opts, :endianess, :little) do
         :big ->
@@ -125,7 +125,7 @@ defmodule BitConverter do
   @doc """
   Converts a binary representing a 32-bit unsigned integer into an integer.
   A 32-bit unsigned integer ranges from 0 a 4.294.967.295.
-  Raises a FunctionClauseError when the binary has more than 32 bits.
+  Raises a `FunctionClauseError` if the binary doesn't have exactly 4 bytes.
 
   ## Parameters
 
@@ -136,33 +136,33 @@ defmodule BitConverter do
 
   ## Examples
 
-      iex> BitConverter.to_uint32(<<0, 0, 0, 0>>)
+      iex> BitConverter.decode_uint32(<<0, 0, 0, 0>>)
       0
 
-      iex> BitConverter.to_uint32(<<1, 0, 0 , 0>>)
+      iex> BitConverter.decode_uint32(<<1, 0, 0 , 0>>)
       1
 
-      iex> BitConverter.to_uint32(<<10, 0, 0, 0>>)
+      iex> BitConverter.decode_uint32(<<10, 0, 0, 0>>)
       10
 
-      iex> BitConverter.to_uint32(<<255, 255, 255, 255>>)
+      iex> BitConverter.decode_uint32(<<255, 255, 255, 255>>)
       4_294_967_295
 
-      iex> BitConverter.to_uint32(<<1, 0, 0, 0>>, endianess: :big)
+      iex> BitConverter.decode_uint32(<<1, 0, 0, 0>>, endianess: :big)
       16_777_216
 
-      iex> BitConverter.to_uint32(<<10, 0, 0, 0>>, endianess: :big)
+      iex> BitConverter.decode_uint32(<<10, 0, 0, 0>>, endianess: :big)
       167_772_160
 
-      iex> BitConverter.to_uint32(<<255, 255, 255, 255>>, endianess: :big)
+      iex> BitConverter.decode_uint32(<<255, 255, 255, 255>>, endianess: :big)
       4_294_967_295
 
-      iex> BitConverter.to_uint32(<<1, 0, 0, 0, 0>>)
-      ** (FunctionClauseError) no function clause matching in BitConverter.to_uint32/2
+      iex> BitConverter.decode_uint32(<<1, 0, 0, 0, 0>>)
+      ** (FunctionClauseError) no function clause matching in BitConverter.decode_uint32/2
 
   """
-  @spec to_uint32(binary(), keyword()) :: integer()
-  def to_uint32(binary, opts \\ []) when byte_size(binary) == 4 do
+  @spec decode_uint32(binary(), keyword()) :: integer()
+  def decode_uint32(binary, opts \\ []) when byte_size(binary) == 4 do
     case Keyword.get(opts, :endianess, :little) do
       :big -> :binary.decode_unsigned(binary, :big)
       _ -> :binary.decode_unsigned(binary, :little)
@@ -172,7 +172,7 @@ defmodule BitConverter do
   @doc """
   Converts a binary representing a 32-bit signed integer into an integer.
   A 32-bit signed integer ranges from -2.147.483.648 a 2.147.483.647.
-  Raises a FunctionClauseError when the binary has more than 32 bits.
+  Raises a `FunctionClauseError` when the binary has more than 32 bits.
 
   ## Parameters
 
@@ -183,33 +183,33 @@ defmodule BitConverter do
 
   ## Examples
 
-      iex> BitConverter.to_int32(<<0, 0, 0, 0>>)
+      iex> BitConverter.decode_int32(<<0, 0, 0, 0>>)
       0
 
-      iex> BitConverter.to_int32(<<10, 0, 0, 0>>)
+      iex> BitConverter.decode_int32(<<10, 0, 0, 0>>)
       10
 
-      iex> BitConverter.to_int32(<<0, 0, 0, 128>>)
+      iex> BitConverter.decode_int32(<<0, 0, 0, 128>>)
       -2_147_483_648
 
-      iex> BitConverter.to_int32(<<255, 255, 255, 127>>)
+      iex> BitConverter.decode_int32(<<255, 255, 255, 127>>)
       2_147_483_647
 
-      iex> BitConverter.to_int32(<<1, 0, 0, 0>>, endianess: :big)
+      iex> BitConverter.decode_int32(<<1, 0, 0, 0>>, endianess: :big)
       16_777_216
 
-      iex> BitConverter.to_int32(<<10, 0, 0, 0>>, endianess: :big)
+      iex> BitConverter.decode_int32(<<10, 0, 0, 0>>, endianess: :big)
       167_772_160
 
-      iex> BitConverter.to_int32(<<255, 255, 255, 127>>, endianess: :big)
+      iex> BitConverter.decode_int32(<<255, 255, 255, 127>>, endianess: :big)
       -129
 
-      iex> BitConverter.to_int32(<<1, 0, 0, 0, 0>>)
-      ** (FunctionClauseError) no function clause matching in BitConverter.to_int32/2
+      iex> BitConverter.decode_int32(<<1, 0, 0, 0, 0>>)
+      ** (FunctionClauseError) no function clause matching in BitConverter.decode_int32/2
 
   """
-  @spec to_int32(binary(), keyword()) :: integer()
-  def to_int32(binary, opts \\ []) when byte_size(binary) == 4 do
+  @spec decode_int32(binary(), keyword()) :: integer()
+  def decode_int32(binary, opts \\ []) when byte_size(binary) == 4 do
     unsigned =
       case Keyword.get(opts, :endianess, :little) do
         :big ->
@@ -230,6 +230,7 @@ defmodule BitConverter do
   @doc """
   Converts an integer into a binary representing a 16-bit unsigned integer.
   A 16-bit unsigned integer ranges from 0 to 65,535.
+  Raises a `FunctionClauseError` if the number is outside the valid range.
 
   ## Parameters
 
