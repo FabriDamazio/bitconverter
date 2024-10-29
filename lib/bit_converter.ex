@@ -264,4 +264,47 @@ defmodule BitConverter do
       _ -> <<number::little-unsigned-16>>
     end
   end
+
+  @doc """
+  Converts an integer into a binary representing a 16-bit signed integer.
+  A 16-bit signed integer ranges from -32,768 to 32,767.
+  Raises a `FunctionClauseError` if the number is outside the valid range.
+
+  ## Parameters
+
+    - `number`: An integer that fits in a 16-bit signed integer.
+
+    - `opts` (Keyword list, optional): Additional options.
+      - `:endianness` (atom): `:little` for little-endian or `:big` for big-endian. Defaults to `:little`.
+
+  ## Examples
+
+      iex> BitConverter.encode_int16(1)
+      <<1, 0>>
+
+      iex> BitConverter.encode_int16(-32_768)
+      <<0, 128>>
+
+      iex> BitConverter.encode_int16(32_767)
+      <<255, 127>>
+
+      iex> BitConverter.encode_int16(256, endianess: :big)
+      <<1, 0>>
+
+      iex> BitConverter.encode_int16(1, endianess: :big)
+      <<0, 1>>
+
+      iex> BitConverter.encode_int16(32_768)
+      ** (FunctionClauseError) no function clause matching in BitConverter.encode_int16/2
+
+      iex> BitConverter.encode_int16(-32_769)
+      ** (FunctionClauseError) no function clause matching in BitConverter.encode_int16/2
+  """
+  @spec encode_int16(integer(), keyword()) :: binary()
+  def encode_int16(number, opts \\ []) when number >= -32_768 and number <= 32_767 do
+    case Keyword.get(opts, :endianess, :little) do
+      :big -> <<number::big-signed-16>>
+      _ -> <<number::little-signed-16>>
+    end
+  end
 end
