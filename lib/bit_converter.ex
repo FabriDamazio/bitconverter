@@ -1,6 +1,8 @@
 defmodule BitConverter do
   @moduledoc """
-  Provides functions to convert between different formats and binary format.
+  Provides functions for encoding and decoding binaries, with support for both little-endian and big-endian systems.
+
+  ## About endianness
 
   The endianness system used in the conversion can be set in the function's options.
   Endian and endianness (or "byte-order") describe how computers  organize the bytes that make up numbers.
