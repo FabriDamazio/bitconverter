@@ -171,7 +171,7 @@ defmodule BitConverter do
 
   @doc """
   Converts a binary representing a 32-bit signed integer into an integer.
-  A 32-bit signed integer ranges from -2.147.483.648 a 2.147.483.647.
+  A 32-bit signed integer ranges from -2,147,483,648 to 2,147,483,647.
   Raises a `FunctionClauseError` when the binary has more than 32 bits.
 
   ## Parameters
@@ -342,6 +342,49 @@ defmodule BitConverter do
     case Keyword.get(opts, :endianess, :little) do
       :big -> <<number::big-unsigned-32>>
       _ -> <<number::little-unsigned-32>>
+    end
+  end
+
+  @doc """
+  Converts an integer into a binary representing a 32-bit signed integer.
+  A 32-bit signed integer ranges from -2,147,483,648 to 2,147,483,647.
+  Raises a `FunctionClauseError` if the number is outside the valid range.
+
+  ## Parameters
+
+    - `number`: An integer that fits in a 32-bit signed integer.
+
+    - `opts` (Keyword list, optional): Additional options.
+      - `:endianness` (atom): `:little` for little-endian or `:big` for big-endian. Defaults to `:little`.
+
+  ## Examples
+
+      iex> BitConverter.encode_int32(1)
+      <<1, 0, 0, 0>>
+
+      iex> BitConverter.encode_int32(-2_147_483_648)
+      <<0, 0, 0, 128>>
+
+      iex> BitConverter.encode_int32(2_147_483_647)
+      <<255, 255, 255, 127>>
+
+      iex> BitConverter.encode_int32(16_777_216, endianess: :big)
+      <<1, 0, 0, 0>>
+
+      iex> BitConverter.encode_int32(1, endianess: :big)
+      <<0, 0, 0, 1>>
+
+      iex> BitConverter.encode_int32(2_147_483_648)
+      ** (FunctionClauseError) no function clause matching in BitConverter.encode_int32/2
+
+      iex> BitConverter.encode_int32(-2_147_483_649)
+      ** (FunctionClauseError) no function clause matching in BitConverter.encode_int32/2
+  """
+  @spec encode_int32(integer(), keyword()) :: binary()
+  def encode_int32(number, opts \\ []) when number >= -2_147_483_648 and number <= 2_147_483_647 do
+    case Keyword.get(opts, :endianess, :little) do
+      :big -> <<number::big-signed-32>>
+      _ -> <<number::little-signed-32>>
     end
   end
 end
