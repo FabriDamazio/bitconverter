@@ -124,7 +124,7 @@ defmodule BitConverter do
 
   @doc """
   Converts a binary representing a 32-bit unsigned integer into an integer.
-  A 32-bit unsigned integer ranges from 0 a 4.294.967.295.
+  A 32-bit unsigned integer ranges from 0 to 4,294,967,295.
   Raises a `FunctionClauseError` if the binary doesn't have exactly 4 bytes.
 
   ## Parameters
@@ -305,6 +305,43 @@ defmodule BitConverter do
     case Keyword.get(opts, :endianess, :little) do
       :big -> <<number::big-signed-16>>
       _ -> <<number::little-signed-16>>
+    end
+  end
+
+  @doc """
+  Converts an integer into a binary representing a 32-bit unsigned integer.
+  A 32-bit unsigned integer ranges from 0 to 4,294,967,295.
+  Raises a `FunctionClauseError` if the number is outside the valid range.
+
+  ## Parameters
+
+    - `number`: An integer that fits in a 32-bit unsigned integer.
+
+    - `opts` (Keyword list, optional): Additional options.
+      - `:endianness` (atom): `:little` for little-endian or `:big` for big-endian. Defaults to `:little`.
+
+  ## Examples
+
+      iex> BitConverter.encode_uint32(1)
+      <<1, 0, 0, 0>>
+
+      iex> BitConverter.encode_uint32(4_294_967_295)
+      <<255, 255, 255, 255>>
+
+      iex> BitConverter.encode_uint32(16_777_216, endianess: :big)
+      <<1, 0, 0, 0>>
+
+      iex> BitConverter.encode_uint32(4_294_967_296)
+      ** (FunctionClauseError) no function clause matching in BitConverter.encode_uint32/2
+
+      iex> BitConverter.encode_uint32(-1)
+      ** (FunctionClauseError) no function clause matching in BitConverter.encode_uint32/2
+  """
+  @spec encode_uint32(integer(), keyword()) :: binary()
+  def encode_uint32(number, opts \\ []) when number >= 0 and number <= 4_294_967_295 do
+    case Keyword.get(opts, :endianess, :little) do
+      :big -> <<number::big-unsigned-32>>
+      _ -> <<number::little-unsigned-32>>
     end
   end
 end
