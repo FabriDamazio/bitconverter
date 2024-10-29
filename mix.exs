@@ -15,7 +15,7 @@ defmodule BitConverter.MixProject do
       # Hex
       package: package(),
       description: """
-      Provides utilities to convert base data types to binary and vice versa.
+      BitConverter is a library that provides a straightforward and convenient way to encode and decode binaries.
       """,
 
       # Docs
@@ -40,7 +40,7 @@ defmodule BitConverter.MixProject do
     [
       maintainers: ["Fabricio Damazio"],
       licenses: ["MIT"],
-      files: ~w(mix.exs README* LICENSE*),
+      files: ~w(lib mix.exs README* LICENSE*),
       links: %{
         Website: @source_url,
         GitHub: @source_url
